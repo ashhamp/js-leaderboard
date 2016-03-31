@@ -32,84 +32,90 @@ var gameInfo = function(){
 function Team(name, rank, wins, losses) {
   this.name = name;
   this.rank = rank;
-  this.wins = wins;
-  this.losses = losses;
+  this.wins = 0;
+  this.losses = 0;
 }
-
-// var teamConstructor = function(name, rank, wins, losses) {
-//   return {
-//     name: name,
-//     rank: rank,
-//     wins: wins,
-//     losses: losses
-//   }
-// }
 
 var gamesArray = gameInfo();
 
-var findTeam = function(element, index, array) {
-
+var findTeamByName = function(teamArray, teamName) {
+  for (var i = 0; i < teamArray.length; i++) {
+    var teamObject = teamArray[i];
+    if (teamObject.name === teamName) {
+      return teamObject;
+    }
+  }
+  return false;
 }
 
 var allTeams = function(games) {
   var teams = [];
-  teams.push(new Team("Patriots"));
-  teams.push(new Team("Broncos"));
 
   for (var i = 0; i < games.length; i++) {
     var homeTeamName = games[i].home_team;
     var awayTeamName = games[i].away_team;
-    teams.forEach(function(element, index, array) {
-      if (team.name !== homeTeamName && team.name !== awayTeamName) {
-        array.push()
-      } else {
 
-      }
+    if (!findTeamByName(teams, homeTeamName)) {
+      teams.push(new Team(homeTeamName));
     }
-  );
-    debugger;
-    // teams.find(findTeam);
 
-    // var homeTeam = new Team(games[i].home_team);
-    // var awayTeam = new Team(games[i].away_team);
-    // if (teams.indexOf(homeTeam) === -1) {
-
-      // teams.push(homeTeam);
+    if (!findTeamByName(teams, awayTeamName)) {
+      teams.push(new Team(awayTeamName));
     }
-    // if (teams.indexOf(awayTeam) === -1) {
-    //   teams.push(awayTeam);
-    // }
   }
+
   return teams;
 }
 
-// allTeams(gamesArray);
+var teamData = allTeams(gamesArray);
 
-// var teamsArray = function() {
-//   var teams = [];
-//   for (var i = 0; i < gameInfo().length; i++) {
-//     var homeTeam = gameInfo()[i].home_team;
-//     var awayTeam = gameInfo()[i].away_team;
-//     teams.push(homeTeam, awayTeam);
-//   }
-//   return teams.sort();
+var winsAndLosses = function(games, teams) {
+  for(var i = 0; i < games.length; i++) {
+    for(var x = 0; x < teams.length; x++) {
+      var homeTeamName = games[i].home_team;
+      var awayTeamName = games[i].away_team;
+      var teamName = teams[x].name;
+      var homeScore = games[i].home_score;
+      var awayScore = games[i].away_score;
+      if (teamName === homeTeamName) {
+        if (homeScore > awayScore) {
+          teams[x].wins += 1;
+        } else {
+          teams[x].losses += 1;
+        }
+      } else if (teamName === awayTeamName) {
+          if (awayScore > homeScore) {
+            teams[x].wins += 1;
+          } else {
+            teams[x].losses += 1;
+          }
+        }
+
+    }
+  }
+}
+
+winsAndLosses(gamesArray, teamData);
+
+
+teamData.sort(function(a, b) {
+  return  b.wins - a.wins;
+})
+
+var setRanks = function(teams) {
+  for(var i = 0; i < teams.length; i++) {
+    teams[i].rank = i + 1;
+  }
+}
+
+setRanks(teamData);
+
+// function to format output - WIP
+// var printer = function(teams) {
+// var string = "----------------------------------\n";
+// string += "| Name     Rank     Total Wins   Total Losses |\n"
+// for(var i = 0; i < teams.length; i++) {
+// string += "| " + teams[i].name + "  " + teams[i].rank + "        " + teams[i].wins + "          " + teams[i].losses + "      |\n"
 // }
-
-// var uniqueTeams = function() {
-//   var teams = teamsArray().slice();
-//   var results = [];
-//   for (var i = 0; i < teams.length - 1; i++) {
-//     if (teams[i + 1] !== teams[i]) {
-//       results.push(teams[i]);
-//     }
-//   }
-//   return results;
-// }
-
-//
-// var uniqueTeams = function() {
-//   var teams = [];
-//   for (var i = 0; i < allTeams().length; i++) {
-//     if (teams)
-//   }
+// console.log(string);
 // }
